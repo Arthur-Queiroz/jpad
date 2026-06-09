@@ -1,0 +1,26 @@
+services:
+  backend:
+    build: ./backend
+    volumes:
+      - dbdata:/app/data
+    environment:
+      - DB_PATH=/app/data/notes.db
+    restart: unless-stopped
+
+  caddy:
+    build:
+      context: .
+      dockerfile: caddy/Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  dbdata:
+  caddy_data:
+  caddy_config:
