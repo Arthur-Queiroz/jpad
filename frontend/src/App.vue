@@ -15,8 +15,20 @@ let saveTimeout = null
 
 const notePath = window.location.pathname
 
+// Mantém o path alinhado ao que o backend aceita (^[a-zA-Z0-9_/-]+$):
+// espaços viram hífen e o resto dos caracteres inválidos é descartado.
+const sanitizePath = (raw) =>
+  raw
+    .replace(/\s+/g, '-')
+    .replace(/[^a-zA-Z0-9_/-]/g, '')
+    .replace(/^\/+/, '')
+
+const onPathInput = () => {
+  inputPath.value = sanitizePath(inputPath.value)
+}
+
 const navigateTo = () => {
-  const val = inputPath.value.trim().replace(/^\/+/, '')
+  const val = sanitizePath(inputPath.value)
   if (!val) return
   window.location.href = '/' + val
 }
@@ -101,6 +113,7 @@ watch(content, debouncedSave)
           class="home-input"
           placeholder="nome-da-nota"
           autofocus
+          @input="onPathInput"
           @keydown.enter="navigateTo"
         />
         <button class="home-btn" @click="navigateTo">go</button>
