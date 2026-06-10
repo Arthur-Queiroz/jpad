@@ -196,7 +196,8 @@ body {
   font-size: 0.95rem;
   border: none;
   outline: none;
-  width: 280px;
+  flex: 1;
+  min-width: 0;
   background: var(--bg-input);
   color: var(--text);
   font-family: 'Inter', sans-serif;
@@ -254,7 +255,7 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
-.path { flex: 1; }
+.path { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .saving { color: var(--saving); }
 .saved { color: var(--saved); }
@@ -286,5 +287,46 @@ body {
   position: absolute;
   top: 1rem;
   right: 1rem;
+}
+
+@media (max-width: 480px) {
+  .home {
+    padding: 0.75rem;
+  }
+
+  .home-card {
+    padding: 1.25rem;
+    width: 100%;
+  }
+
+  .home-prefix {
+    font-size: 0.8rem;
+    padding: 8px 10px;
+  }
+
+  .home-input {
+    font-size: 0.85rem;
+    padding: 8px 10px;
+  }
+
+  .home-btn {
+    font-size: 0.85rem;
+    padding: 8px 14px;
+  }
+
+  .editor-area {
+    padding: 16px;
+    font-size: 0.9rem;
+  }
+
+  .status-bar {
+    padding: 6px 12px;
+    gap: 0.5rem;
+  }
+
+  .home .theme-btn {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
 }
 </style>
