@@ -104,6 +104,9 @@ watch(content, debouncedSave)
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
       </svg>
     </button>
+    <div class="home-brand-wrap">
+      <h1 class="home-brand">JPAD</h1>
+    </div>
     <div class="home-card">
       <div class="home-form">
         <span class="home-prefix">jpad.com/</span>
@@ -170,11 +173,18 @@ body {
 <style scoped>
 .home {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
   padding: 1rem;
   position: relative;
+  gap: 2rem;
+}
+
+.home-brand-wrap {
+  text-align: center;
+  transform: translateY(-6rem);
 }
 
 .home-card {
@@ -183,6 +193,21 @@ body {
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 4px 24px var(--shadow);
+}
+
+.home-brand {
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-align: center;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+
+.home-tagline {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
 }
 
 .home-form {
