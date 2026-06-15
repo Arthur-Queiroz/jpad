@@ -1,0 +1,82 @@
+name: CI & Deploy
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.3'
+          cache-dependency-path: backend/go.sum
+      - run: go vet ./...
+      - run: go build ./...
+      - run: go test ./...
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Valida build das imagens (sem subir)
+        run: docker compose build
+
+  deploy:
+    needs: [ backend, frontend, build ]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Instala cloudflared
+        run: |
+          curl -fsSL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o "$RUNNER_TEMP/cloudflared"
+          sudo install -m 0755 "$RUNNER_TEMP/cloudflared" /usr/local/bin/cloudflared
+
+      - name: SSH via Cloudflare Tunnel
+        run: |
+          mkdir -p ~/.ssh
+          cat >> ~/.ssh/config <<'EOF'
+          Host 2.25.158.85
+            User root
+            ProxyCommand cloudflared access ssh --hostname ssh.devarthur.com.br
+            StrictHostKeyChecking accept-new
+          EOF
+
+      - name: Deploy na VPS
+        run: |
+          ssh root@2.25.158.85 '
+            set -e
+            if [ ! -d /opt/jpad/.git ]; then
+              git clone https://github.com/Arthur-Queiroz/jpad /opt/jpad
+            fi
+            cd /opt/jpad
+            git fetch --all
+            git reset --hard origin/main
+            docker compose up -d --build
+            docker compose ps
+          '
