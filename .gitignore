@@ -1,0 +1,5 @@
+# Banco SQLite local — não versionar (gerado em runtime)
+*.db
+
+# Binários de build do backend
+backend/bin/
