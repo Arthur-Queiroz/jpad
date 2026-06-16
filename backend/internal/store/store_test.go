@@ -77,7 +77,7 @@ func TestUpsertCreatesNewNote(t *testing.T) {
 func TestUpsertUpdatesExistingNote(t *testing.T) {
 	s := newTestStore(t)
 
-	first, err := s.Upsert("my-note", "first version")
+	_, err := s.Upsert("my-note", "first version")
 	if err != nil {
 		t.Fatalf("first Upsert() error: %v", err)
 	}
