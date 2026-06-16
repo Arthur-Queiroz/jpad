@@ -93,10 +93,6 @@ func TestUpsertUpdatesExistingNote(t *testing.T) {
 	if second.Path != "my-note" {
 		t.Errorf("Path = %q, want %q", second.Path, "my-note")
 	}
-	if second.UpdatedAt == first.UpdatedAt {
-		// Technically possible if sub-second, but unlikely
-		t.Log("warning: UpdatedAt did not change between upserts")
-	}
 }
 
 func TestGetAfterUpsert(t *testing.T) {

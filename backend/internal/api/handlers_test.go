@@ -224,6 +224,34 @@ func TestPutNoteBodyTooLarge(t *testing.T) {
 	}
 }
 
+func TestPutNoteBodyJustBelowLimit(t *testing.T) {
+	h := newTestHandler(t)
+
+	// JSON wrapper is ~14 bytes, so use 1MB - 100 bytes to stay safely under
+	content := strings.Repeat("x", (1<<20)-100)
+	body, _ := json.Marshal(map[string]string{"content": content})
+	req := httptest.NewRequest(http.MethodPut, "/api/note", bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	rr := httptest.NewRecorder()
+	h.Routes().ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("status = %d, want %d (body size: %d bytes)", rr.Code, http.StatusOK, len(body))
+	}
+}
+
+func TestMethodNotAllowed(t *testing.T) {
+	h := newTestHandler(t)
+
+	methods := []string{http.MethodDelete, http.MethodPost, http.MethodPatch}
+	for _, m := range methods {
+		rr := doRequest(t, h, m, "/api/note", nil)
+		if rr.Code != http.StatusMethodNotAllowed {
+			t.Errorf("%s /api/note: status = %d, want %d", m, rr.Code, http.StatusMethodNotAllowed)
+		}
+	}
+}
+
 func TestPutNoteEmptyBody(t *testing.T) {
 	h := newTestHandler(t)
 
