@@ -11,7 +11,7 @@
 - 🌓 **Tema claro e escuro** com persistência local
 - 💾 **SQLite** como armazenamento (zero configuração)
 - 🚀 **Deploy em 1 comando** com Docker Compose
-- ✅ **100% testado** (store + API handlers)
+- ✅ **Store e API handlers testados**
 
 ## Stack
 
@@ -73,11 +73,10 @@ jpad/
 │   │   ├── App.vue          # SPA (home + editor)
 │   │   ├── composables/     # useTheme.js
 │   │   └── style.css        # CSS vars (temas)
-│   ├── Dockerfile           # (dentro de caddy/)
 │   └── package.json
+├── Caddyfile                # Reverse proxy + SPA fallback (raiz)
 ├── caddy/
-│   ├── Caddyfile            # Reverse proxy + SPA fallback
-│   └── Dockerfile           # Build frontend + Caddy
+│   └── Dockerfile           # Build do frontend + Caddy (multi-stage)
 ├── docker-compose.yml       # Orquestra backend + caddy
 └── README.md
 ```
