@@ -257,7 +257,7 @@ func TestGetInvalidPath(t *testing.T) {
 func TestPutInvalidPath(t *testing.T) {
 	h := newTestHandler(t)
 
-	rr := doRequest(t, h, http.MethodPut, "/api/bad path", map[string]string{"content": "x"})
+	rr := doRequest(t, h, http.MethodPut, "/api/bad%20path", map[string]string{"content": "x"})
 
 	if rr.Code != http.StatusBadRequest {
 		t.Errorf("status = %d, want %d", rr.Code, http.StatusBadRequest)
@@ -267,7 +267,7 @@ func TestPutInvalidPath(t *testing.T) {
 func TestGetPathWithSpecialChars(t *testing.T) {
 	h := newTestHandler(t)
 
-	badPaths := []string{"/api/a@b", "/api/a b", "/api/a!b", "/api/a.b"}
+	badPaths := []string{"/api/a@b", "/api/a%20b", "/api/a!b", "/api/a.b"}
 	for _, p := range badPaths {
 		rr := doRequest(t, h, http.MethodGet, p, nil)
 		if rr.Code != http.StatusBadRequest {
